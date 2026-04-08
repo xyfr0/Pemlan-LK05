@@ -1,16 +1,27 @@
 package models;
 
-public class IntegrationGateway<T> {
-    private T mockDatabaseRecord;
+import interfaces.Confidential;
+import interfaces.MedicalRecord;
+    import interfaces.Versioned;
 
-    public IntegrationGateway(T record) {
-        this.mockDatabaseRecord = record;
+    public class IntegrationGateway<T extends MedicalRecord & Versioned & Confidential> {
+        private T mockDatabaseRecord;
+
+        public IntegrationGateway(T record) {
+            this.mockDatabaseRecord = record;
+        }
+
+        String warning = null;
+        public SecureResponse<T> fetchData(String id, int clearanceLevel){
+            if(!this.mockDatabaseRecord.getPatientID().equals(id)){
+                return new SecureResponse<>(false, null, "Pasien tidak ditemukan.");
+            }
+            if (clearanceLevel < this.mockDatabaseRecord.getSecurityLevel()){
+                warning = "Beberapa data disamarkan karena berkeamanan rendah";
+                mockDatabaseRecord.maskSensitiveData();
+            }
+            return new SecureResponse<>(true, mockDatabaseRecord, warning);
+        }
+
+
     }
-
-    public SecureResponse<T> fetchData(String id, int clearanceLevel){
-
-        return null;
-    }
-
-
-}
