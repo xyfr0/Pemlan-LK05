@@ -17,7 +17,7 @@ import interfaces.MedicalRecord;
                 return new SecureResponse<>(false, null, "Pasien tidak ditemukan.");
             }
             if (clearanceLevel < this.mockDatabaseRecord.getSecurityLevel()){
-                warning = "Beberapa data disamarkan karena berkeamanan rendah";
+                warning = "Data berkeamanan rendah ditemukan dan telah disamarkan.";
                 mockDatabaseRecord.maskSensitiveData();
             }
             return new SecureResponse<>(true, mockDatabaseRecord, warning);
